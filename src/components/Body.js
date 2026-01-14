@@ -2,6 +2,8 @@ import ResturantCard from "./ResturantCard.js";
 import resList from "../utils/mockData.js";
 import { useState, useEffect } from "react";
 import Shimmer from "./Shimmer.js";
+import { Link } from "react-router";
+
 const Body = () => {
   let [listOfResturants, setListOfRestaurants] = useState([]);
   let [filteredResturantsList, setFilteredRestaurantsList] = useState([]);
@@ -12,15 +14,15 @@ const Body = () => {
 
   const fetchData = async () => {
     const data = await fetch(
-      "https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.9352403&lng=77.624532&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
+      "https://namastedev.com/api/v1/listRestaurants"
     );
 
     const json = await data.json();
     setListOfRestaurants(
-      json.data.cards[4].card.card.gridElements.infoWithStyle.restaurants
+      json.data.data.cards[1].card.card.gridElements.infoWithStyle.restaurants
     );
     setFilteredRestaurantsList(
-      json.data.cards[4].card.card.gridElements.infoWithStyle.restaurants
+      json.data.data.cards[1].card.card.gridElements.infoWithStyle.restaurants
     );
   };
   if (listOfResturants.length == 0) {
@@ -54,7 +56,7 @@ const Body = () => {
             className="filter-btn"
             onClick={() => {
               setFilteredRestaurantsList(
-                filteredResturantsList.filter((res) => res.info.avgRating > 4)
+                filteredResturantsList.filter((res) => res.info.avgRating > 4.3)
               );
             }}
           >
@@ -64,7 +66,10 @@ const Body = () => {
       </div>
       <div className="res-container">
         {filteredResturantsList.map((restaurant) => (
-          <ResturantCard key={restaurant.info.id} resData={restaurant.info} />
+            <Link key={restaurant.info.id} to={"/resturants/" + restaurant.info.id}>
+            <ResturantCard resData={restaurant.info} />
+            </Link>
+          
         ))}
         {/* <ResturantCard resName="Meghana Foods" cuisine="Indian, Biryani, North Indian" rating="4.4 stars" deliveryTime="40 mins"/>
         <ResturantCard resName="KFC" cuisine="Fast Food" rating="4.2 stars" deliveryTime="30 mins"/> */}
