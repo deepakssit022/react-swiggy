@@ -6,18 +6,18 @@ class UserClass extends React.Component {
     console.log(props);
     this.state = {
       count: 0,
-      userInfo:{}
+      userInfo: {},
     };
     console.log("Child - constructor");
   }
 
-async componentDidMount() {
+  async componentDidMount() {
     const data = await fetch("https://api.github.com/users/deepakssit022");
     const json = await data.json();
     console.log(json);
     this.setState({
-        userInfo: json
-    })
+      userInfo: json,
+    });
     console.log("Child - componentDidMount");
   }
 
@@ -29,11 +29,15 @@ async componentDidMount() {
     return (
       <div className="user-card">
         <h1>Count: {count}</h1>
-        <button onClick={()=>{
+        <button
+          onClick={() => {
             this.setState({
-                count: count + 1
-            })
-        }}>Count Increase</button>
+              count: count + 1,
+            });
+          }}
+        >
+          Count Increase
+        </button>
         <h2>Name: {userInfo.name}</h2>
         <h3>Location: {userInfo.location}</h3>
         <h3>Contact: 9876543210</h3>
