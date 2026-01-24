@@ -21,16 +21,18 @@
     "parcel": "^2.16.3"
   },
   "dependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
-    "react-router-dom": "^7.11.0"
+    "react-router-dom": "^7.11.0",
+    "tailwindcss": "^4.1.18"
   },
   "overrides": {
-  "@parcel/resolver-default": {
-    "packageExports": true
+    "@parcel/resolver-default": {
+      "packageExports": true
+    }
+  },
+  "alias": {
+    "react-router/dom": "react-router-dom"
   }
-},
-"alias": {
-  "react-router/dom": "react-router-dom"
-}
 }

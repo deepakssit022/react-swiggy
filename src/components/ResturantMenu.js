@@ -1,25 +1,22 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import Shimmer from "./Shimmer";
+import useResturantMenu from "../utils/useResturantMenu";
+import ResturantCategory from "./ResturantCategory";
 
 const RestaurantMenu = () => {
   const { resId } = useParams();
 
-  const [resInfo, setResInfo] = useState(null);
+  const resInfo = useResturantMenu(resId);
+
+  const [showIndex, setShowIndex] = useState(0);
+
+  const handleToggle = (index) => {
+    setShowIndex((prev) => (prev === index ? null : index));
+  };
+
 
   console.log("resId:", resId);
-
-  useEffect(() => {
-    fetchMenu();
-  }, []);
-
-  const fetchMenu = async () => {
-    const data = await fetch(
-      "https://namastedev.com/api/v1/listRestaurantMenu/" + resId
-    );
-    const json = await data.json();
-    setResInfo(json.data);
-  };
 
   // if (resInfo === null) return <Shimmer />
 
@@ -27,26 +24,49 @@ const RestaurantMenu = () => {
     resInfo?.cards[2].card.card.info || {};
   const { itemCards } =
     resInfo?.cards[4].groupedCard.cardGroupMap.REGULAR.cards[1].card.card || {};
-  console.log("itemCards==>", itemCards);
+  console.log(
+    "itemCards==>",
+    resInfo?.cards[4].groupedCard.cardGroupMap.REGULAR.cards
+  );
+  const categories =
+    resInfo?.cards[4].groupedCard.cardGroupMap.REGULAR.cards.filter((item) => {
+      return (
+        item?.card?.card?.["@type"] ==
+        "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory"
+      );
+    });
+
+  console.log("categories==>", categories);
+
   return resInfo === null ? (
     <Shimmer />
   ) : (
-    <div className="menu">
-      <h1>{name}</h1>
-      <p>
+    <div className="text-center">
+      <h1 className="font-bold text-xl my-10">{name}</h1>
+      <p className="font-bold text-lg">
         {cuisines.join(", ")} - {costForTwoMessage}
       </p>
-      <h2>Menu</h2>
-      <ul>
+
+      {categories.map((category, index) => (
+        <ResturantCategory
+          key={category.card.card.title}
+          data={category.card.card}
+          showItems={index == showIndex ? true : false}
+          setShowIndex={()=> handleToggle(index)}
+        />
+      ))}
+
+      {/* <h2>Menu</h2> */}
+      {/* <ul>
         {itemCards.map((item) => (
           <li key={item.card.info.id}>{item.card.info.name}</li>
-        ))}
-        {/* <li>Paneer Butter Masala</li>
+        ))} */}
+      {/* <li>Paneer Butter Masala</li>
         <li>Dal Makhani</li>
         <li>Jeera Rice</li>
         <li>Naan</li>
         <li>Gulab Jamun</li> */}
-      </ul>
+      {/* </ul> */}
     </div>
   );
 };
